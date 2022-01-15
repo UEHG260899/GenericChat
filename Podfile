@@ -6,5 +6,7 @@ target 'GenericChat' do
   use_frameworks!
 
   # Pods for GenericChat
-
+  pod "Firebase/Core"
+  pod "Firebase/Auth"
+  pod "Firebase/Database"
 end
