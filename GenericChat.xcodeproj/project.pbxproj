@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		21B290DAC8014508305958BE /* Pods_GenericChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9633D58755C5B92893F8FC42 /* Pods_GenericChat.framework */; };
 		A43B38F5279252B70062B4AA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A43B38F4279252B70062B4AA /* GoogleService-Info.plist */; };
+		A43B38F727925E030062B4AA /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43B38F627925E030062B4AA /* DatabaseManager.swift */; };
 		A43D9F72278FBB75003022C6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43D9F71278FBB75003022C6 /* Extensions.swift */; };
 		A4EA02E9278E7F7D00297210 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA02E8278E7F7D00297210 /* AppDelegate.swift */; };
 		A4EA02EB278E7F7D00297210 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA02EA278E7F7D00297210 /* SceneDelegate.swift */; };
@@ -28,6 +29,7 @@
 		6F8AD5E9DDE8A0C2997D8F5D /* Pods-GenericChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GenericChat.debug.xcconfig"; path = "Target Support Files/Pods-GenericChat/Pods-GenericChat.debug.xcconfig"; sourceTree = "<group>"; };
 		9633D58755C5B92893F8FC42 /* Pods_GenericChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GenericChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43B38F4279252B70062B4AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A43B38F627925E030062B4AA /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		A43D9F71278FBB75003022C6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A4EA02E5278E7F7D00297210 /* GenericChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4EA02E8278E7F7D00297210 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				A4EA02E8278E7F7D00297210 /* AppDelegate.swift */,
 				A4EA02EA278E7F7D00297210 /* SceneDelegate.swift */,
 				A43D9F71278FBB75003022C6 /* Extensions.swift */,
+				A43B38F627925E030062B4AA /* DatabaseManager.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4EA0304278E825F00297210 /* LoginViewController.swift in Sources */,
+				A43B38F727925E030062B4AA /* DatabaseManager.swift in Sources */,
 				A4EA0306278E827000297210 /* RegisterViewController.swift in Sources */,
 				A4EA02ED278E7F7D00297210 /* ConversationsViewController.swift in Sources */,
 				A4EA030A278E829700297210 /* VideoPlayerViewController.swift in Sources */,

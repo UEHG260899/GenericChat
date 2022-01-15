@@ -12,7 +12,7 @@ class RegisterViewController: UIViewController {
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person")
+        imageView.image = UIImage(systemName: "person.circle")
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
         imageView.layer.masksToBounds = true
@@ -141,8 +141,8 @@ class RegisterViewController: UIViewController {
     
     
     
-    func alertUserLoginError() {
-        let alert = UIAlertController(title: "Woops", message: "Please enter all the information to register", preferredStyle: .alert)
+    func alertUserLoginError(message: String = "Please enter all the information to register") {
+        let alert = UIAlertController(title: "Woops", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
         present(alert, animated: true)
     }
@@ -162,17 +162,28 @@ class RegisterViewController: UIViewController {
                   return
               }
         
-        //TODO: Firebase login
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            guard let result = result, error == nil else {
-                print("Error creating user")
+        DatabaseManager.shared.userExists(with: email) { [weak self] exists in
+            guard let strongSelf = self else {return}
+            guard !exists else {
+                strongSelf.alertUserLoginError(message: "Looks like an user with that email already exists")
                 return
             }
             
-            let user = result.user
-            print(user)
-            
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { result, error in
+                
+                guard let _ = result, error == nil else {
+                    print("Error creating user")
+                    return
+                }
+                
+                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+                
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+                
+            }
         }
+        
+        
     }
     
     @objc func didTapChangeProfilePicture() {
