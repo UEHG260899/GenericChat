@@ -9,4 +9,5 @@ target 'GenericChat' do
   pod "Firebase/Core"
   pod "Firebase/Auth"
   pod "Firebase/Database"
+  pod 'FBSDKLoginKit'
 end

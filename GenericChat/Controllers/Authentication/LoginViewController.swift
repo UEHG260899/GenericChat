@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FBSDKLoginKit
 
 class LoginViewController: UIViewController {
 
@@ -66,6 +67,12 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private let fbButton: FBLoginButton = {
+        let button = FBLoginButton()
+        button.permissions = ["email","public_profile"]
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -78,11 +85,14 @@ class LoginViewController: UIViewController {
         emailField.delegate = self
         passWordField.delegate = self
         
+        fbButton.delegate = self
+        
         view.addSubview(scrollView)
         scrollView.addSubview(imageView)
         scrollView.addSubview(emailField)
         scrollView.addSubview(passWordField)
         scrollView.addSubview(loginButton)
+        scrollView.addSubview(fbButton)
     }
     
     override func viewDidLayoutSubviews() {
@@ -93,6 +103,7 @@ class LoginViewController: UIViewController {
         emailField.frame = CGRect(x: 30, y: imageView.bottom + 10, width: scrollView.width - 60, height: 52)
         passWordField.frame = CGRect(x: 30, y: emailField.bottom + 10, width: scrollView.width - 60, height: 52)
         loginButton.frame = CGRect(x: 30, y: passWordField.bottom + 10, width: scrollView.width - 60, height: 52)
+        fbButton.frame = CGRect(x: 30, y: loginButton.bottom + 10, width: scrollView.width - 60, height: 52)
     }
     
     
@@ -148,6 +159,66 @@ extension LoginViewController: UITextFieldDelegate {
         }
         
         return true
+    }
+    
+}
+
+extension LoginViewController: LoginButtonDelegate {
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+        
+    }
+    
+    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+        guard let token = result?.token?.tokenString else {
+            print("Failed to login with Facebook")
+            return
+        }
+        
+        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
+                                                         parameters: ["fields": "email, name"],
+                                                         tokenString: token,
+                                                         version: nil,
+                                                         httpMethod: .get)
+        
+        facebookRequest.start { connection, result, error in
+            guard let result = result as? [String: Any], error == nil else {
+                print("Failed to make graph request")
+                return
+            }
+            
+            guard let userName = result["name"] as? String, let email = result["email"] as? String else {
+                print("Failed to get user data from Facebook")
+                return
+            }
+            
+            let nameComponents = userName.components(separatedBy: " ")
+            guard nameComponents.count == 2 else {
+                return
+            }
+            
+            let firstName = nameComponents[0]
+            let lastName = nameComponents[1]
+            
+            DatabaseManager.shared.userExists(with: email) { exists in
+                if !exists {
+                    DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+                }
+            }
+            
+            let credential = FacebookAuthProvider.credential(withAccessToken: token)
+            
+            FirebaseAuth.Auth.auth().signIn(with: credential) { [weak self] result, error in
+                guard let strongSelf = self else {return}
+                guard result != nil, error == nil else {
+                    print("MFA may be needed")
+                    return
+                }
+                print("Successful")
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        
     }
     
 }
