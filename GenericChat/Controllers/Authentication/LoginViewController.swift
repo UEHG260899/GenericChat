@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import Firebase
 import FirebaseAuth
 import FBSDKLoginKit
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
 
@@ -73,6 +75,11 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private let googleBtn: GIDSignInButton = {
+        let button = GIDSignInButton()
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -86,6 +93,7 @@ class LoginViewController: UIViewController {
         passWordField.delegate = self
         
         fbButton.delegate = self
+        googleBtn.addTarget(self, action: #selector(onClickedLoginGoogle), for: .touchUpInside)
         
         view.addSubview(scrollView)
         scrollView.addSubview(imageView)
@@ -93,6 +101,7 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(passWordField)
         scrollView.addSubview(loginButton)
         scrollView.addSubview(fbButton)
+        scrollView.addSubview(googleBtn)
     }
     
     override func viewDidLayoutSubviews() {
@@ -104,6 +113,7 @@ class LoginViewController: UIViewController {
         passWordField.frame = CGRect(x: 30, y: emailField.bottom + 10, width: scrollView.width - 60, height: 52)
         loginButton.frame = CGRect(x: 30, y: passWordField.bottom + 10, width: scrollView.width - 60, height: 52)
         fbButton.frame = CGRect(x: 30, y: loginButton.bottom + 10, width: scrollView.width - 60, height: 52)
+        googleBtn.frame = CGRect(x: 30, y: fbButton.bottom + 10, width: scrollView.width - 60, height: 52)
     }
     
     
@@ -135,6 +145,47 @@ class LoginViewController: UIViewController {
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         }
         
+    }
+    
+    @objc func onClickedLoginGoogle() {
+        guard let clientId = FirebaseApp.app()?.options.clientID else {return}
+        
+        let config = GIDConfiguration(clientID: clientId)
+        
+        GIDSignIn.sharedInstance.signIn(with: config, presenting: self) { [weak self] user, error in
+            guard let strongSelf = self else {return}
+            guard  error == nil else {
+                if let error = error {
+                    print("Failed to sign in woth Google: \(error)")
+                }
+                return
+            }
+            
+            
+            let email = user?.profile?.email
+            let firstName = user?.profile?.givenName
+            let lastName = user?.profile?.familyName
+            
+            DatabaseManager.shared.userExists(with: email!) { exists in
+                if !exists {
+                    DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName!, lastName: lastName!, emailAddress: email!))
+                }
+            }
+            
+            guard let authentication = user?.authentication, let idToken = authentication.idToken else {return}
+            
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
+            
+            FirebaseAuth.Auth.auth().signIn(with: credential) { result, error in
+                guard result != nil, error == nil else {
+                    print("Failed to login with the google credential")
+                    return
+                }
+                
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            }
+            
+        }
     }
     
     @objc private func didTapRegister() {

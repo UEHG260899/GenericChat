@@ -453,6 +453,8 @@
 				DEVELOPMENT_TEAM = 5P4JJDT7CR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GenericChat/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow us to use the camera to take a picture";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow us to select a photo from your library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -484,6 +486,8 @@
 				DEVELOPMENT_TEAM = 5P4JJDT7CR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GenericChat/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow us to use the camera to take a picture";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow us to select a photo from your library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
